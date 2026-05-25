@@ -142,13 +142,7 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        {/* Divider */}
-        {/* <div className="flex items-center gap-4 my-6">
-          <div className="flex-1 h-px bg-gray-300"></div>
-          <span className="text-gray-500 font-medium text-sm">OR</span>
-          <div className="flex-1 h-px bg-gray-300"></div>
-        </div> */}
-
+       
         {/* Social Register Buttons */}
         {/* <div className="grid grid-cols-2 gap-4">
           <button className="border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-medium py-3 rounded-lg transition">
