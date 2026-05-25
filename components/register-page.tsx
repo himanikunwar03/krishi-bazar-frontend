@@ -142,12 +142,12 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        Divider */}
+        {/* Divider */}
         {/* <div className="flex items-center gap-4 my-6">
           <div className="flex-1 h-px bg-gray-300"></div>
           <span className="text-gray-500 font-medium text-sm">OR</span>
           <div className="flex-1 h-px bg-gray-300"></div>
-        </div>
+        </div> */}
 
         {/* Social Register Buttons */}
         {/* <div className="grid grid-cols-2 gap-4">
