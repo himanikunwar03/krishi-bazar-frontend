@@ -149,7 +149,7 @@ export default function RegisterPage() {
           <div className="flex-1 h-px bg-gray-300"></div>
         </div> */}
 
-        Social Register Buttons */}
+        {/* Social Register Buttons */}
         {/* <div className="grid grid-cols-2 gap-4">
           <button className="border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-medium py-3 rounded-lg transition">
             Google
@@ -157,7 +157,7 @@ export default function RegisterPage() {
           <button className="border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-medium py-3 rounded-lg transition">
             Facebook
           </button>
-        </div>
+        </div> */}
 
         {/* Login Link */}
         <div className="mt-6 text-center">
