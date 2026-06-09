@@ -1,8 +1,8 @@
 import LoginPage from '@/components/login-page'
 
 export default function Page() {
-  return {
-    
-  }
+  return (
+    <div>hello</div>
+  )
    
 }
