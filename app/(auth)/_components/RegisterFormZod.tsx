@@ -41,11 +41,9 @@ export default function RegisterForm() {
   const inputClass =
     "h-12 w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-4 text-sm text-gray-800 placeholder:text-gray-400 outline-none transition-colors focus:border-[#1a4731] focus:ring-1 focus:ring-[#1a4731]";
 
-  const labelClass =
-    "mb-1.5 block text-sm font-medium text-gray-700";
+  const labelClass = "mb-1.5 block text-sm font-medium text-gray-700";
 
-  const errClass =
-    "mt-1 block text-xs text-red-500";
+  const errClass = "mt-1 block text-xs text-red-500";
 
   return (
     <div className="min-h-screen bg-[#f0ede8] flex items-center justify-center px-4 py-10">
@@ -55,7 +53,6 @@ export default function RegisterForm() {
           <h1 className="text-3xl font-bold text-[#1a4731] mb-1">
             Krishi Bazar
           </h1>
-
           <p className="text-lg text-gray-700 font-medium">
             Join Krishi Bazar Today
           </p>
@@ -70,10 +67,7 @@ export default function RegisterForm() {
 
           {/* Role Selector */}
           <div className="mb-6">
-            <p className="mb-2 text-sm text-gray-400 italic">
-              I am a ....
-            </p>
-
+            <p className="mb-2 text-sm text-gray-400 italic">I am a ....</p>
             <div className="flex rounded-xl border border-gray-200 overflow-hidden">
               <button
                 type="button"
@@ -86,7 +80,6 @@ export default function RegisterForm() {
               >
                 Customer
               </button>
-
               <button
                 type="button"
                 onClick={() => setRole("farmer")}
@@ -101,79 +94,74 @@ export default function RegisterForm() {
             </div>
           </div>
 
-          Full Name
-          <div className="mb-4">
-            <label className={labelClass}>Full Name</label>
+          {/* First Name & Last Name */}
+          <div className="mb-4 flex gap-3">
+            <div className="flex-1">
+              <label className={labelClass}>First Name</label>
+              <input
+                type="text"
+                {...register("firstName")}
+                placeholder="First name"
+                className={inputClass}
+              />
+              {errors.firstName && (
+                <span className={errClass}>{errors.firstName.message}</span>
+              )}
+            </div>
 
-            <input
-              type="text"
-              {...register("fullName")}
-              placeholder="Enter your full name"
-              className={inputClass}
-            />
-
-            {errors.fullName && (
-              <span className={errClass}>
-                {errors.fullName.message}
-              </span>
-            )}
+            <div className="flex-1">
+              <label className={labelClass}>Last Name</label>
+              <input
+                type="text"
+                {...register("lastName")}
+                placeholder="Last name"
+                className={inputClass}
+              />
+              {errors.lastName && (
+                <span className={errClass}>{errors.lastName.message}</span>
+              )}
+            </div>
           </div>
 
           {/* Email */}
           <div className="mb-4">
-            <label className={labelClass}>
-              Email or Phone Number
-            </label>
-
+            <label className={labelClass}>Email or Phone Number</label>
             <input
               type="email"
               {...register("email")}
               placeholder="you@example.com"
               className={inputClass}
             />
-
             {errors.email && (
-              <span className={errClass}>
-                {errors.email.message}
-              </span>
+              <span className={errClass}>{errors.email.message}</span>
             )}
           </div>
 
           {/* Password */}
           <div className="mb-4">
             <label className={labelClass}>Password</label>
-
             <input
               type="password"
               {...register("password")}
               placeholder="••••••••••"
               className={inputClass}
             />
-
             {errors.password && (
-              <span className={errClass}>
-                {errors.password.message}
-              </span>
+              <span className={errClass}>{errors.password.message}</span>
             )}
           </div>
 
           {/* Confirm Password */}
           <div className="mb-6">
-            <label className={labelClass}>
-              Confirm Password
-            </label>
-
+            <label className={labelClass}>Confirm Password</label>
             <input
               type="password"
               {...register("confirmPassword")}
               placeholder="••••••••••"
               className={inputClass}
             />
-
             {errors.confirmPassword && (
-              <span className={errClass}>
-                {errors.confirmPassword.message}
-              </span>
+              <span className={errClass}>{errors.confirmPassword.message}</span>
             )}
           </div>
 
@@ -183,9 +171,7 @@ export default function RegisterForm() {
             disabled={isSubmitting}
             className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#1a4731] text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
           >
-            {isSubmitting
-              ? "Creating account..."
-              : "Sign Up"}
+            {isSubmitting ? "Creating account..." : "Sign Up"}
           </button>
 
           {/* Login Link */}

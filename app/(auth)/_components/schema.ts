@@ -4,9 +4,13 @@ export const registerSchema = z
   .object({
     role: z.enum(["customer", "farmer"]),
 
-    fullName: z
+    firstName: z
       .string()
-      .min(3, "Full name must be at least 3 characters"),
+      .min(1, "First name is required"),
+
+    lastName: z
+      .string()
+      .min(1, "Last name is required"),
 
     email: z
       .string()
