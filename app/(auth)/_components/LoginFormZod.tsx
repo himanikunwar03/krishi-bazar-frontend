@@ -6,10 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { handleLoginUser } from "@/lib/actions/auth-action";
+import { useAuth } from "@/lib/contexts/AuthContext";
 
 export default function LoginForm() {
   const [error, setError] = useState("");
   const router = useRouter();
+  const { checkAuth } = useAuth();
 
   const {
     register,
@@ -23,12 +26,15 @@ export default function LoginForm() {
     setError("");
 
     try {
-      console.log("Login Data:", data);
-
-      alert("Login Successful!");
-
-      // Change this later when your dashboard page exists
-      router.push("/dashboard");
+      const result = await handleLoginUser(data);
+      
+      if (result.success) {
+        // Refresh auth state
+        await checkAuth();
+        router.push("/dashboard");
+      } else {
+        setError(result.message || "Login failed");
+      }
     } catch (error: any) {
       setError(error?.message || "Login failed");
     }
