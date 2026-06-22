@@ -101,7 +101,7 @@ export default function RegisterForm() {
             </div>
           </div>
 
-          {/* Full Name */}
+          Full Name
           <div className="mb-4">
             <label className={labelClass}>Full Name</label>
 
