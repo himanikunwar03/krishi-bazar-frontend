@@ -1,34 +1,35 @@
-import axiosInstance from "./axios-instance";
+import { publicApiInstance, protectedApiInstance } from "./axios-instance";
 import { API } from "./endpoints";
 
+// Public endpoints (no authentication required)
 export const register = async (data: any) => {
     try {
         const response =
-            await axiosInstance.post(API.AUTH.REGISTER, data); // path, data
-        return response.data; // reponse ko body
+            await publicApiInstance.post(API.AUTH.REGISTER, data);
+        return response.data;
     } catch (error: Error | any) {
         throw new Error(error?.response?.data?.message
             || 'Registration failed');
-        // error?.response?.data -> response ko body
     }
 }
 
 export const login = async (data: any) => {
     try {
         const response =
-            await axiosInstance.post(API.AUTH.LOGIN, data); // path, data
-        return response.data; // reponse ko body
+            await publicApiInstance.post(API.AUTH.LOGIN, data);
+        return response.data;
     } catch (error: Error | any) {
         throw new Error(error?.response?.data?.message
             || 'Login failed');
     }
 }
 
+// Protected endpoints (authentication required)
 export const whoami = async () => {
     try {
         const response =
-            await axiosInstance.get(API.AUTH.WHOAMI);
-        return response.data; // reponse ko body
+            await protectedApiInstance.get(API.AUTH.WHOAMI);
+        return response.data;
     } catch (error: Error | any) {
         throw new Error(error?.response?.data?.message
             || 'Failed to fetch user details');
@@ -37,12 +38,12 @@ export const whoami = async () => {
 
 export const updateProfile = async (data: any) => {
     try {
-        const response = await axiosInstance.put(API.AUTH.UPDATE, data,  { 
+        const response = await protectedApiInstance.put(API.AUTH.UPDATE, data,  { 
             headers: {
-                'Content-Type': 'multipart/form-data' // multipart/form-data for file upload
+                'Content-Type': 'multipart/form-data'
             }
         });
-        return response.data; // reponse ko body
+        return response.data;
     } catch (error: Error | any) {
         throw new Error(error?.response?.data?.message
             || 'Failed to update profile');
@@ -51,8 +52,8 @@ export const updateProfile = async (data: any) => {
 
 export const updatePassword = async (data: any) => {
     try {
-        const response = await axiosInstance.put(API.AUTH.UPDATE_PASSWORD, data);
-        return response.data; // reponse ko body
+        const response = await protectedApiInstance.put(API.AUTH.UPDATE_PASSWORD, data);
+        return response.data;
     }
     catch (error: Error | any) {
         throw new Error(error?.response?.data?.message
