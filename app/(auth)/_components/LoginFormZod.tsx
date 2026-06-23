@@ -7,12 +7,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { handleLoginUser } from "@/lib/actions/auth-action";
-import { useAuth } from "@/lib/contexts/AuthContext";
 
 export default function LoginForm() {
   const [error, setError] = useState("");
   const router = useRouter();
-  const { checkAuth } = useAuth();
 
   const {
     register,
@@ -24,18 +22,19 @@ export default function LoginForm() {
 
   const onSubmit = async (data: LoginFormData) => {
     setError("");
+    console.log("Login form submitted with data:", data);
 
     try {
       const result = await handleLoginUser(data);
+      console.log("Login result:", result);
       
       if (result.success) {
-        // Refresh auth state
-        await checkAuth();
         router.push("/dashboard");
       } else {
         setError(result.message || "Login failed");
       }
     } catch (error: any) {
+      console.error("Login error:", error);
       setError(error?.message || "Login failed");
     }
   };
@@ -138,7 +137,7 @@ export default function LoginForm() {
           <p className="mt-6 text-center text-sm text-gray-500">
             Don't have an account?{" "}
             <Link
-              href="/signup"
+              href="/register"
               className="font-semibold text-[#1a4731] hover:underline"
             >
               Register here

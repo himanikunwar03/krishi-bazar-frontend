@@ -13,6 +13,13 @@ export default function UpdateForm(
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState('');
     const router = useRouter();
+    
+    const getProfileImageUrl = (profileImage: string | undefined) => {
+        if (!profileImage) return '';
+        const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8088';
+        return `${BASE_URL}${profileImage}`;
+    };
+    
     const {
         register,
         handleSubmit,
@@ -74,6 +81,8 @@ export default function UpdateForm(
                             transition: Slide,
                         });
                         handleDismissImage();
+                        // Force a page refresh to show updated data
+                        router.refresh();
                     } else {
                         throw new Error(result.message || 'Failed to update profile');
                     }
@@ -94,59 +103,65 @@ export default function UpdateForm(
             <h1 className="mb-8 text-4xl font-bold uppercase leading-none text-on-dark">Update account</h1>
             <form onSubmit={handleSubmit(onSubmit)}>
                 {error && <div className="mb-6 border border-m-red bg-m-red/10 px-4 py-3 text-sm text-m-red">{error}</div>}
-                <div className="mb-4">
-                    {previewImage ? (
-                        <div className="relative w-24 h-24">
-                            <img
-                                src={previewImage}
-                                alt="Profile Image Preview"
-                                className="w-24 h-24 rounded-full object-cover"
+                <div className="mb-6">
+                    <label className={labelClass}>Profile Image</label>
+                    <div className="flex items-center gap-4">
+                        {previewImage ? (
+                            <div className="relative w-24 h-24">
+                                <img
+                                    src={previewImage}
+                                    alt="Profile Image Preview"
+                                    className="w-24 h-24 rounded-full object-cover border-2 border-[#1a4731]"
+                                />
+                                <Controller
+                                    name="image"
+                                    control={control}
+                                    render={({ field: { onChange } }) => (
+                                        <button
+                                            type="button"
+                                            onClick={() => handleDismissImage(onChange)}
+                                            className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 shadow-md"
+                                        >
+                                            ✕
+                                        </button>
+                                    )}
+                                />
+                            </div>
+                        ) : user?.profileImage || user?.imageUrl ? (
+                            <Image
+                                src={getProfileImageUrl(user?.profileImage || user?.imageUrl)}
+                                alt="Profile Image"
+                                width={96}
+                                height={96}
+                                className="w-24 h-24 rounded-full object-cover border-2 border-[#1a4731]"
                             />
+                        ) : (
+                            <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center border-2 border-dashed border-gray-300">
+                                <span className="text-gray-400 text-2xl">📷</span>
+                            </div>
+                        )}
+                        <div className="flex-1">
                             <Controller
                                 name="image"
                                 control={control}
                                 render={({ field: { onChange } }) => (
-                                    <button
-                                        type="button"
-                                        onClick={() => handleDismissImage(onChange)}
-                                        className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
-                                    >
-                                        ✕
-                                    </button>
+                                    <div className="space-y-2">
+                                        <input
+                                            ref={fileInputRef}
+                                            type="file"
+                                            onChange={(e) => handleImageChange(e.target.files?.[0], onChange)}
+                                            accept=".jpg,.jpeg,.png,.webp"
+                                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#1a4731] file:text-white hover:file:bg-[#1a4731]/90 cursor-pointer"
+                                        />
+                                        <p className="text-xs text-gray-500">
+                                            Accepted formats: JPG, JPEG, PNG, WEBP (Max 5MB)
+                                        </p>
+                                    </div>
                                 )}
                             />
+                            {errors.image && <p className="text-sm text-red-600 mt-1">{errors.image.message}</p>}
                         </div>
-                    ) : user?.imageUrl ? (
-                        <Image
-                            src={process.env.NEXT_PUBLIC_API_BASE_URL + user.imageUrl}
-                            alt="Profile Image"
-                            width={100}
-                            height={100}
-                            className="w-24 h-24 rounded-full object-cover"
-                        />
-                    ) : (
-                        <div className="w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center">
-                            <span className="text-gray-600">No Image</span>
-                        </div>
-                    )}
-                </div>
-
-                {/* Profile Image Input */}
-                <div className="mb-4">
-                    <label className="block text-sm font-medium mb-1">Profile Image</label>
-                    <Controller
-                        name="image"
-                        control={control}
-                        render={({ field: { onChange } }) => (
-                            <input
-                                ref={fileInputRef}
-                                type="file"
-                                onChange={(e) => handleImageChange(e.target.files?.[0], onChange)}
-                                accept=".jpg,.jpeg,.png,.webp"
-                            />
-                        )}
-                    />
-                    {errors.image && <p className="text-sm text-red-600">{errors.image.message}</p>}
+                    </div>
                 </div>
                 <div className="mb-5">
                     <label className={labelClass}>Email</label>
@@ -194,7 +209,7 @@ export default function UpdateForm(
                 <button
                     type="submit"
                     disabled={isSubmitting || isPending}
-                    className="flex h-12 w-full items-center justify-center bg-on-dark text-xs font-bold uppercase tracking-[1.5px] text-canvas transition-opacity hover:opacity-90 disabled:opacity-50"
+                    className="flex h-12 w-full items-center justify-center bg-[#1a4731] text-white text-sm font-semibold rounded-lg transition-colors hover:bg-[#1a4731]/90 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {isPending ? "Updating profile..." : "Update Profile"}
                 </button>

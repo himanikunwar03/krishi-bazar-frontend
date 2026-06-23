@@ -1,15 +1,32 @@
 import UpdateForm from "../_components/UpdateForm";
 import { handleUserDetails } from "@/lib/actions/auth-action";
-import { redirect } from "next/navigation";
+import { getUserData } from "@/lib/cookies";
+import DashboardHeader from "../_components/DashboardHeader";
 
 export default async function Page() {
-    const userDetails = await handleUserDetails();
-    if(!userDetails.success){
-        throw new Error(userDetails.message || 'Failed to fetch user details');
+    // Try to fetch user details from whoami API
+    let user = null;
+    try {
+        const userDetails = await handleUserDetails();
+        if (userDetails.success) {
+            user = userDetails.data;
+        }
+    } catch (error) {
+        console.error("Failed to fetch user details from whoami API:", error);
     }
+    
+    // Fall back to cookie data if API call fails
+    if (!user) {
+        console.log("Falling back to cookie data");
+        user = await getUserData();
+    }
+    
     return (
-        <div className="min-h-screen bg-[#f0ede8] flex items-center justify-center px-4 py-12">
-            <UpdateForm user={userDetails.data} />
+        <div className="space-y-6">
+            <DashboardHeader title="Profile" />
+            <div className="flex justify-center">
+                <UpdateForm user={user} />
+            </div>
         </div>
     );
 }

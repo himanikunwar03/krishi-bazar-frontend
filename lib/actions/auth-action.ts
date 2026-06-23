@@ -8,14 +8,18 @@ import { redirect, RedirectType } from "next/navigation";
 
 export const handleRegisterUser = async (data: RegisterFormData) => {
     try {
-        // how to handle data from component and how to send to component
+        console.log("handleRegisterUser called with data:", data);
         const result = await register(data);
+        console.log("API response from register:", result);
+        
         if (result.success) {
             return { success: true, message: result.message, data: result.data };
         } else {
+            console.log("Registration failed with message:", result.message);
             return { success: false, message: result.message || 'Registration failed' };
         }
     } catch (error: Error | any) {
+        console.error("Exception in handleRegisterUser:", error);
         return { success: false, message: error?.message || 'Registration failed' };
     }
 }
@@ -57,7 +61,13 @@ export const handleUpdateProfile = async (formData: FormData) => {
     try {
         const result = await updateProfile(formData);
         if (result.success) {
-            await revalidatePath("/dashboard/profile"); // Revalidate the profile page after successful update
+            // Update the user data in cookies after successful profile update
+            if (result.data) {
+                await storeUserData(result.data);
+            }
+            // Revalidate both profile and dashboard pages to show updated data
+            await revalidatePath("/dashboard/profile"); 
+            await revalidatePath("/dashboard");
             return { success: true, message: result.message, data: result.data };
         }
         else {

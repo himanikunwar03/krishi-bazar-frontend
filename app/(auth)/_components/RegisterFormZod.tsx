@@ -6,34 +6,50 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { handleRegisterUser } from "@/lib/actions/auth-action";
 
 export default function RegisterForm() {
   const [error, setError] = useState("");
-  const [role, setRole] = useState<"customer" | "farmer">("customer");
+  const [role, setRole] = useState<"admin" | "user">("user");
 
   const router = useRouter();
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    setValue,
+    formState: { errors, isSubmitting, isValid },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
+    mode: "onChange",
+    defaultValues: {
+      role: "user",
+    },
   });
+
+  // Update role in form when role state changes
+  const handleRoleChange = (newRole: "admin" | "user") => {
+    setRole(newRole);
+    setValue("role", newRole);
+  };
 
   const onSubmit = async (data: RegisterFormData) => {
     setError("");
+    console.log("Form submitted. Data:", data);
+    console.log("API Base URL:", process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8089");
 
     try {
-      console.log({
-        ...data,
-        role,
-      });
+      const result = await handleRegisterUser(data);
+      console.log("Registration result:", result);
 
-      alert("Registration Successful!");
-
-      router.push("/login");
+      if (result.success) {
+        router.push("/login");
+      } else {
+        setError(result.message || "Registration failed");
+      }
     } catch (error: any) {
+      console.error("Registration error:", error);
+      console.error("Error details:", JSON.stringify(error, null, 2));
       setError(error?.message || "Registration failed");
     }
   };
@@ -71,27 +87,42 @@ export default function RegisterForm() {
             <div className="flex rounded-xl border border-gray-200 overflow-hidden">
               <button
                 type="button"
-                onClick={() => setRole("customer")}
+                onClick={() => handleRoleChange("user")}
                 className={`flex-1 h-11 text-sm font-semibold transition-colors ${
-                  role === "customer"
+                  role === "user"
                     ? "bg-[#1a4731] text-white"
                     : "bg-white text-gray-700"
                 }`}
               >
-                Customer
+                User
               </button>
               <button
                 type="button"
-                onClick={() => setRole("farmer")}
+                onClick={() => handleRoleChange("admin")}
                 className={`flex-1 h-11 text-sm font-semibold transition-colors ${
-                  role === "farmer"
+                  role === "admin"
                     ? "bg-[#1a4731] text-white"
                     : "bg-white text-gray-700"
                 }`}
               >
-                Farmer
+                Admin
               </button>
             </div>
+            <input type="hidden" {...register("role")} />
+          </div>
+
+          {/* Username */}
+          <div className="mb-4">
+            <label className={labelClass}>Username</label>
+            <input
+              type="text"
+              {...register("username")}
+              placeholder="Username"
+              className={inputClass}
+            />
+            {errors.username && (
+              <span className={errClass}>{errors.username.message}</span>
+            )}
           </div>
 
           {/* First Name & Last Name */}
@@ -170,6 +201,7 @@ export default function RegisterForm() {
             type="submit"
             disabled={isSubmitting}
             className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#1a4731] text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
+            onClick={() => console.log("Button clicked. isValid:", isValid, "errors:", errors)}
           >
             {isSubmitting ? "Creating account..." : "Sign Up"}
           </button>
