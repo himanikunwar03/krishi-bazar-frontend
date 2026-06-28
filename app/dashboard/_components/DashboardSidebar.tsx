@@ -3,15 +3,24 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { handleLogout } from "@/lib/actions/auth-action";
+import { Home, Settings, User as UserIcon, Lock, LogOut } from "lucide-react";
+import Image from "next/image";
 
 export default function DashboardSidebar({ user }: { user: any }) {
   const pathname = usePathname();
   const name = user?.firstName || user?.username || user?.name || user?.email || "User";
 
+  const getProfileImageUrl = (profileImage: string | undefined) => {
+    if (!profileImage) return '';
+    const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8088';
+    return `${BASE_URL}${profileImage}`;
+  };
+
   const navItems = [
-    { href: "/dashboard", label: "Dashboard", icon: "🏠" },
-    { href: "/dashboard/profile", label: "Profile", icon: "👤" },
-    { href: "/dashboard/password", label: "Password", icon: "🔒" },
+    { href: "/dashboard", label: "Dashboard", icon: Home },
+    ...(user?.role === "admin" ? [{ href: "/dashboard/admin", label: "Admin", icon: Settings }] : []),
+    { href: "/dashboard/profile", label: "Profile", icon: UserIcon },
+    { href: "/dashboard/password", label: "Password", icon: Lock },
   ];
 
   return (
@@ -27,12 +36,22 @@ export default function DashboardSidebar({ user }: { user: any }) {
         {/* User Info */}
         <div className="border-b border-white/10 p-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-xl font-bold">
-              {name.charAt(0).toUpperCase()}
-            </div>
+            {user?.profileImage || user?.imageUrl ? (
+              <Image
+                src={getProfileImageUrl(user?.profileImage || user?.imageUrl)}
+                alt={name}
+                width={48}
+                height={48}
+                className="h-12 w-12 rounded-full object-cover border-2 border-white/20"
+              />
+            ) : (
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-xl font-bold">
+                {name.charAt(0).toUpperCase()}
+              </div>
+            )}
             <div>
               <p className="font-semibold">{name}</p>
-              <p className="text-sm text-white/70">{user?.email}</p>
+              <p className="text-sm text-white/70 overflow-hidden text-ellipsis whitespace-nowrap">{user?.email}</p>
             </div>
           </div>
         </div>
@@ -52,7 +71,7 @@ export default function DashboardSidebar({ user }: { user: any }) {
                         : "text-white/70 hover:bg-white/10 hover:text-white"
                     }`}
                   >
-                    <span className="text-xl">{item.icon}</span>
+                    <item.icon className="w-5 h-5" />
                     <span className="font-medium">{item.label}</span>
                   </Link>
                 </li>
@@ -69,7 +88,7 @@ export default function DashboardSidebar({ user }: { user: any }) {
             }}
             className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
           >
-            <span className="text-xl">🚪</span>
+            <LogOut className="w-5 h-5" />
             <span className="font-medium">Logout</span>
           </button>
         </div>

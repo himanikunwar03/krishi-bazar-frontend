@@ -1,9 +1,11 @@
 "use client";
 
+import { LucideIcon, Package, DollarSign, Sprout, Users } from "lucide-react";
+
 interface StatCardProps {
   title: string;
   value: string | number;
-  icon: string;
+  icon: LucideIcon;
   description?: string;
   trend?: {
     value: number;
@@ -11,7 +13,7 @@ interface StatCardProps {
   };
 }
 
-function StatCard({ title, value, icon, description, trend }: StatCardProps) {
+function StatCard({ title, value, icon: Icon, description, trend }: StatCardProps) {
   return (
     <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-100">
       <div className="flex items-start justify-between">
@@ -31,8 +33,8 @@ function StatCard({ title, value, icon, description, trend }: StatCardProps) {
             </p>
           )}
         </div>
-        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#1a4731]/10 text-2xl">
-          {icon}
+        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#1a4731]/10 text-[#1a4731]">
+          <Icon className="w-6 h-6" />
         </div>
       </div>
     </div>
@@ -44,28 +46,28 @@ export default function DashboardStats() {
     {
       title: "Total Orders",
       value: "24",
-      icon: "📦",
+      icon: Package,
       description: "Orders this month",
       trend: { value: 12, isPositive: true },
     },
     {
       title: "Revenue",
       value: "$4,231",
-      icon: "💰",
+      icon: DollarSign,
       description: "Total earnings",
       trend: { value: 8, isPositive: true },
     },
     {
       title: "Products",
       value: "156",
-      icon: "🌾",
+      icon: Sprout,
       description: "Active listings",
       trend: { value: 5, isPositive: false },
     },
     {
       title: "Customers",
       value: "89",
-      icon: "👥",
+      icon: Users,
       description: "Registered users",
       trend: { value: 15, isPositive: true },
     },

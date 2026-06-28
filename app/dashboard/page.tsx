@@ -3,6 +3,7 @@ import { getUserData } from "@/lib/cookies";
 import DashboardHeader from "./_components/DashboardHeader";
 import DashboardStats from "./_components/DashboardStats";
 import UserProfileCard from "./_components/UserProfileCard";
+import { Check, User, Lock, Package } from "lucide-react";
 
 export default async function DashboardPage() {
     // Try to fetch user details from whoami API
@@ -43,7 +44,7 @@ export default async function DashboardPage() {
                 <div className="space-y-4">
                     <div className="flex items-center gap-4 border-b border-gray-100 pb-4">
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-green-600">
-                            ✓
+                            <Check className="w-5 h-5" />
                         </div>
                         <div className="flex-1">
                             <p className="text-sm font-medium text-gray-900">Account created successfully</p>
@@ -52,7 +53,7 @@ export default async function DashboardPage() {
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                            👤
+                            <User className="w-5 h-5" />
                         </div>
                         <div className="flex-1">
                             <p className="text-sm font-medium text-gray-900">Profile updated</p>
@@ -71,7 +72,7 @@ export default async function DashboardPage() {
                         className="flex items-center gap-3 rounded-lg border border-gray-200 p-4 transition-colors hover:border-[#1a4731] hover:bg-[#1a4731]/5"
                     >
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1a4731]/10 text-[#1a4731]">
-                            👤
+                            <User className="w-5 h-5" />
                         </div>
                         <div>
                             <p className="text-sm font-medium text-gray-900">Edit Profile</p>
@@ -83,7 +84,7 @@ export default async function DashboardPage() {
                         className="flex items-center gap-3 rounded-lg border border-gray-200 p-4 transition-colors hover:border-[#1a4731] hover:bg-[#1a4731]/5"
                     >
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1a4731]/10 text-[#1a4731]">
-                            🔒
+                            <Lock className="w-5 h-5" />
                         </div>
                         <div>
                             <p className="text-sm font-medium text-gray-900">Change Password</p>
@@ -92,7 +93,7 @@ export default async function DashboardPage() {
                     </a>
                     <div className="flex items-center gap-3 rounded-lg border border-gray-200 p-4 transition-colors hover:border-[#1a4731] hover:bg-[#1a4731]/5 opacity-50 cursor-not-allowed">
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
-                            📦
+                            <Package className="w-5 h-5" />
                         </div>
                         <div>
                             <p className="text-sm font-medium text-gray-900">View Orders</p>

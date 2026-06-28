@@ -7,9 +7,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { handleLoginUser } from "@/lib/actions/auth-action";
+import { Eye, EyeOff, Lock } from "lucide-react";
 
 export default function LoginForm() {
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const {
@@ -29,7 +31,12 @@ export default function LoginForm() {
       console.log("Login result:", result);
       
       if (result.success) {
-        router.push("/dashboard");
+        const userRole = result.data?.user?.role;
+        if (userRole === 'admin') {
+          router.push("/dashboard/admin");
+        } else {
+          router.push("/dashboard");
+        }
       } else {
         setError(result.message || "Login failed");
       }
@@ -63,7 +70,7 @@ export default function LoginForm() {
         {/* Secure Login Badge */}
         <div className="mb-6">
           <span className="inline-flex items-center gap-2 bg-gray-100 text-gray-600 text-sm px-4 py-2 rounded-full">
-            🔒 Secure Login
+            <Lock className="w-4 h-4" /> Secure Login
           </span>
         </div>
 
@@ -100,12 +107,21 @@ export default function LoginForm() {
               Password
             </label>
 
-            <input
-              type="password"
-              {...register("password")}
-              placeholder="••••••••••"
-              className={inputClass}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                {...register("password")}
+                placeholder="••••••••••"
+                className={inputClass}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
 
             {errors.password && (
               <span className="mt-1 block text-xs text-red-500">
