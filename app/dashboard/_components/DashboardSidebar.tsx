@@ -18,7 +18,6 @@ export default function DashboardSidebar({ user }: { user: any }) {
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: Home },
-    ...(user?.role === "admin" ? [{ href: "/dashboard/admin", label: "Admin", icon: Settings }] : []),
     { href: "/dashboard/profile", label: "Profile", icon: UserIcon },
     { href: "/dashboard/password", label: "Password", icon: Lock },
   ];
