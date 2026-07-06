@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { handleLogout } from "@/lib/actions/auth-action";
-import { Home, Settings, User as UserIcon, Lock, LogOut } from "lucide-react";
+import { Home, User as UserIcon, Lock, LogOut, ShoppingBag, Store } from "lucide-react";
 import Image from "next/image";
 
 export default function DashboardSidebar({ user }: { user: any }) {
@@ -18,8 +18,10 @@ export default function DashboardSidebar({ user }: { user: any }) {
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: Home },
+    { href: "/dashboard/orders", label: "My Orders", icon: ShoppingBag },
     { href: "/dashboard/profile", label: "Profile", icon: UserIcon },
     { href: "/dashboard/password", label: "Password", icon: Lock },
+    { href: "/marketplace", label: "Shop Now", icon: Store },
   ];
 
   return (

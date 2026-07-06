@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const registerSchema = z
   .object({
-    role: z.enum(["admin", "user"]),
+    role: z.enum(["user", "farmer"]),
 
     username: z
       .string()

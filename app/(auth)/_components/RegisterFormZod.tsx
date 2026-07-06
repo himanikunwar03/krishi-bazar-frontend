@@ -10,7 +10,7 @@ import { handleRegisterUser } from "@/lib/actions/auth-action";
 
 export default function RegisterForm() {
   const [error, setError] = useState("");
-  const [role, setRole] = useState<"admin" | "user">("user");
+  const [role, setRole] = useState<"user" | "farmer">("user");
 
   const router = useRouter();
 
@@ -28,7 +28,7 @@ export default function RegisterForm() {
   });
 
   // Update role in form when role state changes
-  const handleRoleChange = (newRole: "admin" | "user") => {
+  const handleRoleChange = (newRole: "user" | "farmer") => {
     setRole(newRole);
     setValue("role", newRole);
   };
@@ -36,7 +36,7 @@ export default function RegisterForm() {
   const onSubmit = async (data: RegisterFormData) => {
     setError("");
     console.log("Form submitted. Data:", data);
-    console.log("API Base URL:", process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8089");
+    console.log("API Base URL:", process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8088");
 
     try {
       const result = await handleRegisterUser(data);
@@ -98,14 +98,14 @@ export default function RegisterForm() {
               </button>
               <button
                 type="button"
-                onClick={() => handleRoleChange("admin")}
+                onClick={() => handleRoleChange("farmer")}
                 className={`flex-1 h-11 text-sm font-semibold transition-colors ${
-                  role === "admin"
+                  role === "farmer"
                     ? "bg-[#1a4731] text-white"
                     : "bg-white text-gray-700"
                 }`}
               >
-                Admin
+                Farmer
               </button>
             </div>
             <input type="hidden" {...register("role")} />

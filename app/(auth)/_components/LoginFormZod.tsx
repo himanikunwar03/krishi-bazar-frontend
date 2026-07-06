@@ -8,11 +8,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { handleLoginUser } from "@/lib/actions/auth-action";
 import { Eye, EyeOff, Lock } from "lucide-react";
+import { useAuth } from "@/lib/contexts/AuthContext";
 
 export default function LoginForm() {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const { checkAuth } = useAuth();
 
   const {
     register,
@@ -31,11 +33,13 @@ export default function LoginForm() {
       console.log("Login result:", result);
       
       if (result.success) {
+        // Sync the new cookie into AuthContext state before navigating
+        await checkAuth();
         const userRole = result.data?.user?.role;
-        if (userRole === 'admin') {
-          router.push("/admin-panel");
+        if (userRole === 'farmer') {
+          router.push("/farmer-dashboard");
         } else {
-          router.push("/dashboard");
+          router.push("/marketplace");
         }
       } else {
         setError(result.message || "Login failed");

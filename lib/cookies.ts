@@ -5,6 +5,11 @@ export async function setTokenCookie(token: string) {
     cookieStore.set({
         name: "auth_token",
         value: token,
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+        path: '/',
     })
 }
 export async function getTokenCookie() {
@@ -15,13 +20,18 @@ export async function storeUserData(userData: any) {
     const cookieStore = await cookies();
     cookieStore.set({
         name: "user_data",
-        value: JSON.stringify(userData), // change object into string
+        value: JSON.stringify(userData),
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+        path: '/',
     })
 }
 export async function getUserData() {
     const cookieStore = await cookies();
     const userDataCookie = cookieStore.get("user_data")?.value;
-    return userDataCookie ? JSON.parse(userDataCookie) : null; // change string into object
+    return userDataCookie ? JSON.parse(userDataCookie) : null;
 }
 
 export async function clearAuthCookies() {

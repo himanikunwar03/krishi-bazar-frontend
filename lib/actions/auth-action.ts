@@ -27,11 +27,20 @@ export const handleLoginUser = async (data: LoginFormData) => {
     try {
         // how to handle data from component and how to send to component
         const result = await login(data);
+        console.log("Login API result:", result);
+        
         // set cookie
-        const user = result.data.user;
-        const token = result.data.token;
+        const user = result.data?.user;
+        const token = result.data?.token;
+        
+        if (!user || !token) {
+            console.error("Missing user or token in response:", result);
+            return { success: false, message: 'Invalid response from server' };
+        }
+        
         await setTokenCookie(token);
         await storeUserData(user);
+        console.log("Cookies set successfully");
 
         if (result.success) {
             return { success: true, message: result.message, data: result.data };
@@ -39,6 +48,7 @@ export const handleLoginUser = async (data: LoginFormData) => {
             return { success: false, message: result.message || 'Login failed' };
         }
     } catch (error: Error | any) {
+        console.error("Login action error:", error);
         return { success: false, message: error?.message || 'Login failed' };
     }
 }
