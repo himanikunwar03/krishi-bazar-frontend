@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/lib/contexts/AuthContext";
-import { updateProfile, updatePassword } from "@/lib/api/auth";
+import { updatePassword } from "@/lib/api/auth";
+import { handleUpdateProfile } from "@/lib/actions/auth-action";
 import { Camera, Save, Lock, User, Eye, EyeOff } from "lucide-react";
 import { toast } from "react-toastify";
 
@@ -94,7 +95,7 @@ export default function ProfilePage() {
         email: user.email || "",
         username: user.username || "",
         imageFile: null,
-        imagePreview: user.image ? `http://localhost:8088${user.image}` : null,
+        imagePreview: user.profileImage ? `http://localhost:8088${user.profileImage}` : null,
       });
     }
   }, [user]);
@@ -123,9 +124,17 @@ export default function ProfilePage() {
       if (profile.imageFile) {
         data.append("profileImage", profile.imageFile);
       }
-      const res = await updateProfile(data);
+      const res = await handleUpdateProfile(data);
       if (res?.success && res?.data) {
         setUser(res.data);
+        // Update preview immediately from response
+        setProfile((prev) => ({
+          ...prev,
+          imageFile: null,
+          imagePreview: res.data.profileImage
+            ? `http://localhost:8088${res.data.profileImage}`
+            : prev.imagePreview,
+        }));
         toast.success("Profile updated successfully!");
       } else {
         toast.success("Profile updated!");

@@ -31,7 +31,7 @@ export default function LoginForm() {
     try {
       const result = await handleLoginUser(data);
       console.log("Login result:", result);
-      
+
       if (result.success) {
         // Sync the new cookie into AuthContext state before navigating
         await checkAuth();

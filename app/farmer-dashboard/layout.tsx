@@ -74,9 +74,9 @@ export default function FarmerDashboardLayout({ children }: { children: React.Re
         <div className="px-6 py-4 border-b border-white/10">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-emerald-400/20 border border-emerald-400/30 flex items-center justify-center flex-shrink-0">
-              {user?.image ? (
+              {user?.profileImage ? (
                 <img
-                  src={`http://localhost:8088${user.image}`}
+                  src={`http://localhost:8088${user.profileImage}`}
                   alt={farmerName}
                   className="w-10 h-10 rounded-full object-cover"
                 />
