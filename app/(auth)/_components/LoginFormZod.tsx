@@ -7,8 +7,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { handleLoginUser } from "@/lib/actions/auth-action";
-import { Eye, EyeOff, Lock } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
+
+const inputClass = "h-12 w-full border border-gray-300 bg-white px-4 py-2 text-gray-900 placeholder:text-gray-400 outline-none transition-colors focus:border-[#1a4731] focus:ring-1 focus:ring-[#1a4731] rounded-lg";
 
 export default function LoginForm() {
   const [error, setError] = useState("");
@@ -78,12 +80,15 @@ export default function LoginForm() {
           <label className="mb-1.5 block text-sm font-medium text-gray-700">
             Email or Phone Number
           </label>
-          <IconInput
-            icon={<MailIcon className="h-4 w-4" />}
-            type="text"
-            placeholder="Enter your email or number"
-            {...register("email")}
-          />
+          <div className="relative">
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Enter your email or number"
+              {...register("email")}
+              className={inputClass + " pl-10"}
+            />
+          </div>
           {errors.email && (
             <span className="mt-1 block text-xs text-red-500">{errors.email.message}</span>
           )}
@@ -125,23 +130,25 @@ export default function LoginForm() {
           </button>
         </div>
 
-        <PrimaryButton type="submit" loading={isSubmitting}>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full h-12 bg-[#1a4731] text-white font-semibold rounded-lg hover:bg-[#1a4731]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
           {isSubmitting ? "Signing in..." : "Login"}
-        </PrimaryButton>
+        </button>
       </form>
 
-          {/* Signup Link */}
-          <p className="mt-6 text-center text-sm text-gray-500">
-            Don't have an account?{" "}
-            <Link
-              href="/register"
-              className="font-semibold text-[#1a4731] hover:underline"
-            >
-              Register here
-            </Link>
-          </p>
-        </form>
-      </div>
+      {/* Signup Link */}
+      <p className="mt-6 text-center text-sm text-gray-500">
+        Don't have an account?{" "}
+        <Link
+          href="/register"
+          className="font-semibold text-[#1a4731] hover:underline"
+        >
+          Register here
+        </Link>
+      </p>
     </div>
   );
 }

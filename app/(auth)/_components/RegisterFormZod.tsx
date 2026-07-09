@@ -86,7 +86,6 @@ export default function RegisterForm() {
             <p className="mb-2 text-sm text-gray-400 italic">I am a ....</p>
             <div className="flex rounded-xl border border-gray-200 overflow-hidden">
               <button
-                key={r}
                 type="button"
                 onClick={() => handleRoleChange("user")}
                 className={`flex-1 h-11 text-sm font-semibold transition-colors ${
