@@ -50,26 +50,14 @@ export default function LoginForm() {
     }
   };
 
-  const inputClass =
-    "h-12 w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-4 text-sm text-gray-800 placeholder:text-gray-400 outline-none transition-colors focus:border-[#1a4731] focus:ring-1 focus:ring-[#1a4731]";
-
   return (
-    <div className="min-h-screen bg-[#f0ede8] flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-sm px-10 py-12">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#1a4731] mb-1">
-            Krishi Bazar
-          </h1>
-
-          <p className="text-xl text-gray-700 font-medium">
-            Welcome Back!
-          </p>
-
-          <p className="text-sm text-gray-500">
-            Access your Krishi Bazar marketplace
-          </p>
-        </div>
+    <div>
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="mb-2 text-2xl font-bold text-[#1a4731]">Krishi Bazar</h1>
+        <p className="text-xl font-medium text-gray-800">Welcome Back!</p>
+        <p className="text-sm text-gray-500">Access your Krishi Bazar marketplace</p>
+      </div>
 
         {/* Secure Login Badge */}
         <div className="mb-6">
@@ -78,32 +66,28 @@ export default function LoginForm() {
           </span>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {error && (
-            <div className="mb-5 border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-600 rounded-lg">
-              {error}
-            </div>
-          )}
-
-          {/* Email */}
-          <div className="mb-5">
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">
-              Email Address
-            </label>
-
-            <input
-              type="email"
-              {...register("email")}
-              placeholder="Enter your email"
-              className={inputClass}
-            />
-
-            {errors.email && (
-              <span className="mt-1 block text-xs text-red-500">
-                {errors.email.message}
-              </span>
-            )}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {error && (
+          <div className="mb-5 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-600">
+            {error}
           </div>
+        )}
+
+        {/* Email / phone */}
+        <div className="mb-4">
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">
+            Email or Phone Number
+          </label>
+          <IconInput
+            icon={<MailIcon className="h-4 w-4" />}
+            type="text"
+            placeholder="Enter your email or number"
+            {...register("email")}
+          />
+          {errors.email && (
+            <span className="mt-1 block text-xs text-red-500">{errors.email.message}</span>
+          )}
+        </div>
 
           {/* Password */}
           <div className="mb-2">
@@ -134,24 +118,17 @@ export default function LoginForm() {
             )}
           </div>
 
-          {/* Forgot Password */}
-          <div className="mb-6 flex justify-end">
-            <button
-              type="button"
-              className="text-sm text-gray-500 hover:text-[#1a4731]"
-            >
-              Forgot Password?
-            </button>
-          </div>
-
-          {/* Login Button */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#1a4731] text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
-          >
-            {isSubmitting ? "Signing in..." : "Login"}
+        {/* Forgot password */}
+        <div className="mb-6 flex justify-end">
+          <button type="button" className="text-sm text-gray-500 hover:text-[#1a4731]">
+            Forgot Password?
           </button>
+        </div>
+
+        <PrimaryButton type="submit" loading={isSubmitting}>
+          {isSubmitting ? "Signing in..." : "Login"}
+        </PrimaryButton>
+      </form>
 
           {/* Signup Link */}
           <p className="mt-6 text-center text-sm text-gray-500">
@@ -168,3 +145,4 @@ export default function LoginForm() {
     </div>
   );
 }
+

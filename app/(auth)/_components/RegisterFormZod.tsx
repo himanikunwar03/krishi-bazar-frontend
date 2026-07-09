@@ -74,18 +74,19 @@ export default function RegisterForm() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {error && (
-            <div className="mb-5 border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-600 rounded-lg">
-              {error}
-            </div>
-          )}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {error && (
+          <div className="mb-5 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-600">
+            {error}
+          </div>
+        )}
 
           {/* Role Selector */}
           <div className="mb-6">
             <p className="mb-2 text-sm text-gray-400 italic">I am a ....</p>
             <div className="flex rounded-xl border border-gray-200 overflow-hidden">
               <button
+                key={r}
                 type="button"
                 onClick={() => handleRoleChange("user")}
                 className={`flex-1 h-11 text-sm font-semibold transition-colors ${
@@ -221,3 +222,4 @@ export default function RegisterForm() {
     </div>
   );
 }
+
