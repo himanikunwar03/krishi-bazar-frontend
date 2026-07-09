@@ -6,19 +6,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  IconInput,
-  MailIcon,
-  LockIcon,
-  ShieldIcon,
-  PrimaryButton,
-  // OrDivider,
-  // SocialButtons,
-} from "./ui";
+import { handleLoginUser } from "@/lib/actions/auth-action";
+import { Eye, EyeOff, Lock } from "lucide-react";
+import { useAuth } from "@/lib/contexts/AuthContext";
 
 export default function LoginForm() {
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const { checkAuth } = useAuth();
 
   const {
     register,
@@ -30,11 +26,27 @@ export default function LoginForm() {
 
   const onSubmit = async (data: LoginFormData) => {
     setError("");
+    console.log("Login form submitted with data:", data);
+
     try {
-      console.log("Login Data:", data);
-      router.push("/dashboard");
-    } catch (err: any) {
-      setError(err?.message || "Login failed");
+      const result = await handleLoginUser(data);
+      console.log("Login result:", result);
+
+      if (result.success) {
+        // Sync the new cookie into AuthContext state before navigating
+        await checkAuth();
+        const userRole = result.data?.user?.role;
+        if (userRole === 'farmer') {
+          router.push("/farmer-dashboard");
+        } else {
+          router.push("/marketplace");
+        }
+      } else {
+        setError(result.message || "Login failed");
+      }
+    } catch (error: any) {
+      console.error("Login error:", error);
+      setError(error?.message || "Login failed");
     }
   };
 
@@ -47,13 +59,12 @@ export default function LoginForm() {
         <p className="text-sm text-gray-500">Access your Krishi Bazar marketplace</p>
       </div>
 
-      {/* Secure login badge */}
-      <div className="mb-6">
-        <span className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-sm text-gray-600">
-          <ShieldIcon className="h-4 w-4" />
-          Secure Login
-        </span>
-      </div>
+        {/* Secure Login Badge */}
+        <div className="mb-6">
+          <span className="inline-flex items-center gap-2 bg-gray-100 text-gray-600 text-sm px-4 py-2 rounded-full">
+            <Lock className="w-4 h-4" /> Secure Login
+          </span>
+        </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         {error && (
@@ -78,19 +89,34 @@ export default function LoginForm() {
           )}
         </div>
 
-        {/* Password */}
-        <div className="mb-2">
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">Password</label>
-          <IconInput
-            icon={<LockIcon className="h-4 w-4" />}
-            type="password"
-            placeholder="••••••••••"
-            {...register("password")}
-          />
-          {errors.password && (
-            <span className="mt-1 block text-xs text-red-500">{errors.password.message}</span>
-          )}
-        </div>
+          {/* Password */}
+          <div className="mb-2">
+            <label className="mb-1.5 block text-sm font-medium text-gray-700">
+              Password
+            </label>
+
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                {...register("password")}
+                placeholder="••••••••••"
+                className={inputClass}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
+
+            {errors.password && (
+              <span className="mt-1 block text-xs text-red-500">
+                {errors.password.message}
+              </span>
+            )}
+          </div>
 
         {/* Forgot password */}
         <div className="mb-6 flex justify-end">
@@ -104,15 +130,19 @@ export default function LoginForm() {
         </PrimaryButton>
       </form>
 
-      {/* <OrDivider /> */}
-      {/* <SocialButtons /> */}
-
-      <p className="mt-6 text-center text-sm text-gray-500">
-        Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-semibold text-[#1a4731] hover:underline">
-          Register here
-        </Link>
-      </p>
+          {/* Signup Link */}
+          <p className="mt-6 text-center text-sm text-gray-500">
+            Don't have an account?{" "}
+            <Link
+              href="/register"
+              className="font-semibold text-[#1a4731] hover:underline"
+            >
+              Register here
+            </Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }
+

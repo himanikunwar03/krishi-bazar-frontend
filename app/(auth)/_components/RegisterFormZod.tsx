@@ -6,51 +6,73 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  IconInput,
-  MailIcon,
-  LockIcon,
-  UserIcon,
-  PrimaryButton,
-  OrDivider,
-  SocialButtons,
-} from "./ui";
-
-type Role = "customer" | "farmer";
+import { handleRegisterUser } from "@/lib/actions/auth-action";
 
 export default function RegisterForm() {
   const [error, setError] = useState("");
-  const [role, setRole] = useState<Role>("customer");
+  const [role, setRole] = useState<"user" | "farmer">("user");
+
   const router = useRouter();
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    setValue,
+    formState: { errors, isSubmitting, isValid },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
+    mode: "onChange",
+    defaultValues: {
+      role: "user",
+    },
   });
+
+  // Update role in form when role state changes
+  const handleRoleChange = (newRole: "user" | "farmer") => {
+    setRole(newRole);
+    setValue("role", newRole);
+  };
 
   const onSubmit = async (data: RegisterFormData) => {
     setError("");
+    console.log("Form submitted. Data:", data);
+    console.log("API Base URL:", process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8088");
+
     try {
-      console.log({ ...data, role });
-      router.push("/login");
-    } catch (err: any) {
-      setError(err?.message || "Registration failed");
+      const result = await handleRegisterUser(data);
+      console.log("Registration result:", result);
+
+      if (result.success) {
+        router.push("/login");
+      } else {
+        setError(result.message || "Registration failed");
+      }
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      console.error("Error details:", JSON.stringify(error, null, 2));
+      setError(error?.message || "Registration failed");
     }
   };
 
+  const inputClass =
+    "h-12 w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-4 text-sm text-gray-800 placeholder:text-gray-400 outline-none transition-colors focus:border-[#1a4731] focus:ring-1 focus:ring-[#1a4731]";
+
   const labelClass = "mb-1.5 block text-sm font-medium text-gray-700";
+
   const errClass = "mt-1 block text-xs text-red-500";
 
   return (
-    <div>
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="mb-1 text-2xl font-bold text-[#1a4731]">Krishi Bazar</h1>
-        <p className="text-lg font-medium text-gray-800">Join Krishi Bazar Today</p>
-      </div>
+    <div className="min-h-screen bg-[#f0ede8] flex items-center justify-center px-4 py-10">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-sm px-10 py-12">
+        {/* Header */}
+        <div className="mb-7">
+          <h1 className="text-3xl font-bold text-[#1a4731] mb-1">
+            Krishi Bazar
+          </h1>
+          <p className="text-lg text-gray-700 font-medium">
+            Join Krishi Bazar Today
+          </p>
+        </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         {error && (
@@ -59,89 +81,145 @@ export default function RegisterForm() {
           </div>
         )}
 
-        {/* Role selector */}
-        <div className="mb-5">
-          <p className="mb-2 text-sm italic text-gray-400">I am a ....</p>
-          <div className="flex overflow-hidden rounded-xl border border-gray-200">
-            {(["customer", "farmer"] as Role[]).map((r) => (
+          {/* Role Selector */}
+          <div className="mb-6">
+            <p className="mb-2 text-sm text-gray-400 italic">I am a ....</p>
+            <div className="flex rounded-xl border border-gray-200 overflow-hidden">
               <button
                 key={r}
                 type="button"
-                onClick={() => setRole(r)}
-                className={`h-11 flex-1 text-sm font-semibold capitalize transition-colors ${
-                  role === r ? "bg-[#1a4731] text-white" : "bg-white text-gray-700"
+                onClick={() => handleRoleChange("user")}
+                className={`flex-1 h-11 text-sm font-semibold transition-colors ${
+                  role === "user"
+                    ? "bg-[#1a4731] text-white"
+                    : "bg-white text-gray-700"
                 }`}
               >
-                {r}
+                User
               </button>
-            ))}
+              <button
+                type="button"
+                onClick={() => handleRoleChange("farmer")}
+                className={`flex-1 h-11 text-sm font-semibold transition-colors ${
+                  role === "farmer"
+                    ? "bg-[#1a4731] text-white"
+                    : "bg-white text-gray-700"
+                }`}
+              >
+                Farmer
+              </button>
+            </div>
+            <input type="hidden" {...register("role")} />
           </div>
-        </div>
 
-        {/* Full name */}
-        <div className="mb-4">
-          <label className={labelClass}>Full Name</label>
-          <IconInput
-            icon={<UserIcon className="h-4 w-4" />}
-            type="text"
-            placeholder="Enter your full name"
-            {...register("fullName")}
-          />
-          {errors.fullName && <span className={errClass}>{errors.fullName.message}</span>}
-        </div>
+          {/* Username */}
+          <div className="mb-4">
+            <label className={labelClass}>Username</label>
+            <input
+              type="text"
+              {...register("username")}
+              placeholder="Username"
+              className={inputClass}
+            />
+            {errors.username && (
+              <span className={errClass}>{errors.username.message}</span>
+            )}
+          </div>
 
-        {/* Email / phone */}
-        <div className="mb-4">
-          <label className={labelClass}>Email or Phone Number</label>
-          <IconInput
-            icon={<MailIcon className="h-4 w-4" />}
-            type="text"
-            placeholder="you@example.com or phone"
-            {...register("email")}
-          />
-          {errors.email && <span className={errClass}>{errors.email.message}</span>}
-        </div>
+          {/* First Name & Last Name */}
+          <div className="mb-4 flex gap-3">
+            <div className="flex-1">
+              <label className={labelClass}>First Name</label>
+              <input
+                type="text"
+                {...register("firstName")}
+                placeholder="First name"
+                className={inputClass}
+              />
+              {errors.firstName && (
+                <span className={errClass}>{errors.firstName.message}</span>
+              )}
+            </div>
 
-        {/* Password */}
-        <div className="mb-4">
-          <label className={labelClass}>Password</label>
-          <IconInput
-            icon={<LockIcon className="h-4 w-4" />}
-            type="password"
-            placeholder="••••••••••"
-            {...register("password")}
-          />
-          {errors.password && <span className={errClass}>{errors.password.message}</span>}
-        </div>
+            <div className="flex-1">
+              <label className={labelClass}>Last Name</label>
+              <input
+                type="text"
+                {...register("lastName")}
+                placeholder="Last name"
+                className={inputClass}
+              />
+              {errors.lastName && (
+                <span className={errClass}>{errors.lastName.message}</span>
+              )}
+            </div>
+          </div>
 
-        {/* Confirm password */}
-        <div className="mb-6">
-          <label className={labelClass}>Confirm Password</label>
-          <IconInput
-            icon={<LockIcon className="h-4 w-4" />}
-            type="password"
-            placeholder="••••••••••"
-            {...register("confirmPassword")}
-          />
-          {errors.confirmPassword && (
-            <span className={errClass}>{errors.confirmPassword.message}</span>
-          )}
-        </div>
+          {/* Email */}
+          <div className="mb-4">
+            <label className={labelClass}>Email or Phone Number</label>
+            <input
+              type="email"
+              {...register("email")}
+              placeholder="you@example.com"
+              className={inputClass}
+            />
+            {errors.email && (
+              <span className={errClass}>{errors.email.message}</span>
+            )}
+          </div>
 
-        <PrimaryButton type="submit" loading={isSubmitting}>
-          {isSubmitting ? "Creating account..." : "Sign Up"}
-        </PrimaryButton>
-      </form>
+          {/* Password */}
+          <div className="mb-4">
+            <label className={labelClass}>Password</label>
+            <input
+              type="password"
+              {...register("password")}
+              placeholder="••••••••••"
+              className={inputClass}
+            />
+            {errors.password && (
+              <span className={errClass}>{errors.password.message}</span>
+            )}
+          </div>
 
-      <OrDivider />
-      <SocialButtons />
+          {/* Confirm Password */}
+          <div className="mb-6">
+            <label className={labelClass}>Confirm Password</label>
+            <input
+              type="password"
+              {...register("confirmPassword")}
+              placeholder="••••••••••"
+              className={inputClass}
+            />
+            {errors.confirmPassword && (
+              <span className={errClass}>{errors.confirmPassword.message}</span>
+            )}
+          </div>
 
-      <p className="mt-6 text-center text-sm text-gray-500">
-        Already have an account?{" "}
-        <Link href="/login" className="font-semibold text-[#1a4731] hover:underline">
-          Login
-        </Link>
-      </p>
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#1a4731] text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
+            onClick={() => console.log("Button clicked. isValid:", isValid, "errors:", errors)}
+          >
+            {isSubmitting ? "Creating account..." : "Sign Up"}
+          </button>
+
+          {/* Login Link */}
+          <p className="mt-6 text-center text-sm text-gray-500">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="font-semibold text-[#1a4731] hover:underline"
+            >
+              Login
+            </Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }
+
