@@ -95,7 +95,7 @@ export default function ProfilePage() {
         email: user.email || "",
         username: user.username || "",
         imageFile: null,
-        imagePreview: user.profileImage ? `http://localhost:8088${user.profileImage}` : null,
+        imagePreview: user.profileImage ? `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8088'}${user.profileImage}` : null,
       });
     }
   }, [user]);
@@ -132,7 +132,7 @@ export default function ProfilePage() {
           ...prev,
           imageFile: null,
           imagePreview: res.data.profileImage
-            ? `http://localhost:8088${res.data.profileImage}`
+            ? `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8088'}${res.data.profileImage}`
             : prev.imagePreview,
         }));
         toast.success("Profile updated successfully!");

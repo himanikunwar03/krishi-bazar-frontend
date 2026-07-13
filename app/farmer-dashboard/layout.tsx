@@ -76,7 +76,7 @@ export default function FarmerDashboardLayout({ children }: { children: React.Re
             <div className="w-10 h-10 rounded-full bg-emerald-400/20 border border-emerald-400/30 flex items-center justify-center flex-shrink-0">
               {user?.profileImage ? (
                 <img
-                  src={`http://localhost:8088${user.profileImage}`}
+                  src={`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8088'}${user.profileImage}`}
                   alt={farmerName}
                   className="w-10 h-10 rounded-full object-cover"
                 />

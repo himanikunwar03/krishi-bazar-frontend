@@ -77,7 +77,7 @@ function ProductCard({
       <div className="relative h-44 bg-gradient-to-br from-green-50 to-emerald-100 overflow-hidden">
         {product.image ? (
           <img
-            src={`http://localhost:8088${product.image}`}
+            src={`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8088'}${product.image}`}
             alt={product.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
@@ -157,7 +157,7 @@ function ProductModal({
         unit: editingProduct.unit,
         image: null,
         imagePreview: editingProduct.image
-          ? `http://localhost:8088${editingProduct.image}`
+          ? `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8088'}${editingProduct.image}`
           : null,
       });
     } else {

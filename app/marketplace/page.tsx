@@ -41,7 +41,7 @@ interface Product {
 type CartMap = { [productId: string]: number };
 
 const CART_KEY = "krishi_cart";
-const API_IMG_BASE = "http://localhost:8088";
+const API_IMG_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8088";
 
 const CATEGORIES = [
   { label: "All", emoji: "" },
