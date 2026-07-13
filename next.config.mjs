@@ -12,6 +12,11 @@ const nextConfig = {
         port: '8088',
         pathname: '/uploads/**',
       },
+      {
+        protocol: 'https',
+        hostname: '**.onrender.com',
+        pathname: '/uploads/**',
+      },
     ],
   },
   async rewrites() {
