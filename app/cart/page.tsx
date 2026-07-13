@@ -21,7 +21,7 @@ import {
 import { toast } from "react-toastify";
 
 const CART_KEY = "krishi_cart";
-const API_IMG_BASE = "http://localhost:8088";
+const API_IMG_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8088";
 const DELIVERY_FEE = 100;
 const FREE_DELIVERY_THRESHOLD = 2000;
 

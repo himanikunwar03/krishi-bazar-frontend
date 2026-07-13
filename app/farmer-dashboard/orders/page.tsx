@@ -233,7 +233,7 @@ function OrderRow({
                   <div className="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
                     {item.productImage ? (
                       <img
-                        src={`http://localhost:8088${item.productImage}`}
+                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8088'}${item.productImage}`}
                         alt={item.productName}
                         className="w-full h-full object-cover"
                       />
