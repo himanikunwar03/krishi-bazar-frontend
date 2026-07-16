@@ -157,7 +157,7 @@ function ProductModal({
         unit: editingProduct.unit,
         image: null,
         imagePreview: editingProduct.image
-          ? `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8088'}${editingProduct.image}`
+          ? `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8089'}${editingProduct.image}`
           : null,
       });
     } else {
